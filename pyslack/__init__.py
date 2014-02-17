@@ -1,5 +1,10 @@
 
+import logging
+
 import requests
+
+
+__version__ = "0.2.0"
 
 
 class SlackError(Exception):
@@ -34,3 +39,26 @@ class SlackClient(object):
         if link_names is not None:
             params['link_names'] = link_names
         return self._make_request(method, params)
+
+
+class SlackHandler(logging.Handler):
+    """A logging handler that posts messages to a Slack channel!
+
+    References:
+    http://docs.python.org/2/library/logging.html#handler-objects
+    """
+    def __init__(self, token, channel, username=None, parse=None, link_names=None):
+        super(SlackHandler, self).__init__()
+        self.client = SlackClient(token)
+        self.channel = channel
+        self.username = username
+        self.parse = parse
+        self.link_names = link_names
+
+    def emit(self, record):
+        message = self.format(record)
+        self.client.chat_post_message(self.channel,
+                                      message,
+                                      self.username,
+                                      self.parse,
+                                      self.link_names)
