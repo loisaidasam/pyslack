@@ -4,7 +4,7 @@ import logging
 import requests
 
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 class SlackError(Exception):
@@ -19,14 +19,25 @@ class SlackClient(object):
         self.token = token
 
     def _make_request(self, method, params):
+        """Make request to API endpoint
+
+        Note: Ignoring SSL cert validation due to intermittent failures
+        http://requests.readthedocs.org/en/latest/user/advanced/#ssl-cert-verification
+        """
         url = "%s/%s" % (SlackClient.BASE_URL, method)
         params['token'] = self.token
-        result = requests.post(url, data=params).json()
+        result = requests.post(url, data=params, verify=False).json()
         if not result['ok']:
             raise SlackError(result['error'])
         return result
 
     def chat_post_message(self, channel, text, username=None, parse=None, link_names=None):
+        """chat.postMessage
+
+        This method posts a message to a channel.
+
+        https://api.slack.com/methods/chat.postMessage
+        """
         method = 'chat.postMessage'
         params = {
             'channel': channel,
