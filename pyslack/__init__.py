@@ -31,7 +31,7 @@ class SlackClient(object):
             raise SlackError(result['error'])
         return result
 
-    def chat_post_message(self, channel, text, username=None, parse=None, link_names=None):
+    def chat_post_message(self, channel, text, username=None, parse=None, link_names=None, **kwargs):
         """chat.postMessage
 
         This method posts a message to a channel.
@@ -43,6 +43,7 @@ class SlackClient(object):
             'channel': channel,
             'text': text,
         }
+        params.update(kwargs)
         if username is not None:
             params['username'] = username
         if parse is not None:
