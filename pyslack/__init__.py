@@ -43,9 +43,7 @@ class SlackClient(object):
             'channel': channel,
             'text': text,
         }
-        print "kwargs=", kwargs
         params.update(kwargs)
-        print "params=", params
         if username is not None:
             params['username'] = username
         if parse is not None:
