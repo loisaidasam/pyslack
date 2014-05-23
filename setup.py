@@ -1,12 +1,10 @@
 
 from distutils.core import setup
 
-from pyslack import __version__
-
 
 setup(
     name="pyslack",
-    version=__version__,
+    version="0.2.1",
     description="A Python wrapper for Slack's API",
     author="@LoisaidaSam",
     author_email="sam.sandberg@gmail.com",

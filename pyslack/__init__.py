@@ -1,10 +1,5 @@
-
 import logging
-
 import requests
-
-
-__version__ = "0.2.1"
 
 
 class SlackError(Exception):
