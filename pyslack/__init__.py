@@ -26,25 +26,19 @@ class SlackClient(object):
             raise SlackError(result['error'])
         return result
 
-    def chat_post_message(self, channel, text, username=None, parse=None, link_names=None, **kwargs):
+    def chat_post_message(self, channel, text, **params):
         """chat.postMessage
 
         This method posts a message to a channel.
 
+        Check docs for all available **params options:
         https://api.slack.com/methods/chat.postMessage
         """
         method = 'chat.postMessage'
-        params = {
+        params.update({
             'channel': channel,
             'text': text,
-        }
-        params.update(kwargs)
-        if username is not None:
-            params['username'] = username
-        if parse is not None:
-            params['parse'] = parse
-        if link_names is not None:
-            params['link_names'] = link_names
+        })
         return self._make_request(method, params)
 
 
@@ -54,16 +48,14 @@ class SlackHandler(logging.Handler):
     References:
     http://docs.python.org/2/library/logging.html#handler-objects
     """
-    def __init__(self, token, channel, username, **kwargs):
+    def __init__(self, token, channel, **kwargs):
         super(SlackHandler, self).__init__()
         self.client = SlackClient(token)
         self.channel = channel
-        self.username = username
         self._kwargs = kwargs
 
     def emit(self, record):
         message = self.format(record)
         self.client.chat_post_message(self.channel,
                                       message,
-                                      self.username,
                                       **self._kwargs)
