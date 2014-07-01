@@ -21,7 +21,7 @@ Integrate a SlackHandler into your logging!
     >>> logger = logging.getLogger('test')
     >>> logger.setLevel(logging.DEBUG)
     
-    >>> handler = SlackHandler('YOUR-TOKEN-HERE', '#channel_name', 'botname')
+    >>> handler = SlackHandler('YOUR-TOKEN-HERE', '#channel_name', username='botname')
     >>> handler.setLevel(logging.WARNING)
     >>> formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(name)s (%(process)d): %(message)s')
     >>> handler.setFormatter(formatter)
