@@ -5,7 +5,13 @@ A Python wrapper for Slack's API
 
 https://api.slack.com
 
-Example Usage:
+## Installation
+
+    pip install git+git://github.com/loisaidasam/pyslack.git
+
+## Usage
+
+Post a message into your Slack integration's `#play` channel
 
     >>> from pyslack import SlackClient
     >>> client = SlackClient('YOUR-TOKEN-HERE')
