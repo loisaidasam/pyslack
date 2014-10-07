@@ -1,3 +1,4 @@
 
 *.pyc
 settings.py
+pyslack.egg-info/
