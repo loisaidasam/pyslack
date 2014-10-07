@@ -34,3 +34,13 @@ Integrate a SlackHandler into your logging!
     >>> logger.addHandler(handler)
     
     >>> logger.error("Oh noh!") # Will post the formatted message to channel #channel_name from user botname
+
+## Testing
+
+Before running the test suite, you'll need to add the required libraries to your environment. These aren't included in the main requirements.txt because they are not needed for normal operation of pyslack.
+
+    pip install -r tests/requirements.txt
+    
+The tests can be run as follows:
+
+    $ python setup.py test
