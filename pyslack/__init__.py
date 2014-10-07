@@ -1,5 +1,6 @@
 import logging
 import requests
+from datetime import datetime, timedelta
 
 
 class SlackError(Exception):
@@ -12,6 +13,7 @@ class SlackClient(object):
 
     def __init__(self, token):
         self.token = token
+        self.blocked_until = None
 
     def _make_request(self, method, params):
         """Make request to API endpoint
@@ -19,9 +21,23 @@ class SlackClient(object):
         Note: Ignoring SSL cert validation due to intermittent failures
         http://requests.readthedocs.org/en/latest/user/advanced/#ssl-cert-verification
         """
+        if self.blocked_until is not None and \
+                datetime.now() < self.blocked_until:
+            raise SlackError("Too many requests - wait until {0}" \
+                    .format(self.blocked_until))
+
         url = "%s/%s" % (SlackClient.BASE_URL, method)
         params['token'] = self.token
-        result = requests.post(url, data=params, verify=False).json()
+        response = requests.post(url, data=params, verify=False)
+
+        if response.status_code == 429:
+            # Too many requests
+            retry_after = int(response.headers.get('retry-after', '1'))
+            self.blocked_until = datetime.now() + timedelta(seconds=retry_after)
+            raise SlackError("Too many requests - retry after {0} second(s)" \
+                    .format(retry_after))
+
+        result = response.json()
         if not result['ok']:
             raise SlackError(result['error'])
         return result

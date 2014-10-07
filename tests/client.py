@@ -1,5 +1,6 @@
 # coding: utf-8
 
+from datetime import datetime, timedelta
 import unittest
 
 from mock import Mock, patch
@@ -33,4 +34,35 @@ class ClientTest(unittest.TestCase):
             client.chat_post_message('#channel', 'message')
 
         self.assertEqual(context.exception.message, reply["error"])
+
+    @patch('requests.post')
+    def test_rate_limit(self, r_post):
+        """HTTP 429 Too Many Requests response is handled gracefully"""
+        client = pyslack.SlackClient(self.token)
+
+        reply = {"ok": False, "error": "Too many requests"}
+        r_post.return_value = Mock(status_code=429, headers={'retry-after': 10})
+        r_post.return_value.json.return_value = reply
+
+        with self.assertRaises(pyslack.SlackError) as context:
+            client.chat_post_message('#channel', 'message')
+
+        self.assertEqual(r_post.call_count, 1)
+        self.assertGreater(client.blocked_until, 
+                datetime.now() + timedelta(seconds=8))
+
+        # A second send attempt should also throw, but without creating a request
+        with self.assertRaises(pyslack.SlackError) as context:
+            client.chat_post_message('#channel', 'message')
+
+        self.assertEqual(r_post.call_count, 1)
+
+        # After the time has expired, it should be business as usual
+        client.blocked_until = datetime.now() - timedelta(seconds=5)
+
+        r_post.return_value = Mock(status_code=200)
+        r_post.return_value.json.return_value = {"ok": True}
+
+        client.chat_post_message('#channel', 'message')
+        self.assertEqual(r_post.call_count, 2)
 
