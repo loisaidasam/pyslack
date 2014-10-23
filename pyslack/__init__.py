@@ -1,6 +1,6 @@
+import datetime
 import logging
 import requests
-from datetime import datetime, timedelta
 
 
 class SlackError(Exception):
@@ -22,7 +22,7 @@ class SlackClient(object):
         http://requests.readthedocs.org/en/latest/user/advanced/#ssl-cert-verification
         """
         if self.blocked_until is not None and \
-                datetime.now() < self.blocked_until:
+                datetime.datetime.utcnow() < self.blocked_until:
             raise SlackError("Too many requests - wait until {0}" \
                     .format(self.blocked_until))
 
@@ -33,7 +33,8 @@ class SlackClient(object):
         if response.status_code == 429:
             # Too many requests
             retry_after = int(response.headers.get('retry-after', '1'))
-            self.blocked_until = datetime.now() + timedelta(seconds=retry_after)
+            self.blocked_until = datetime.datetime.utcnow() + \
+                    datetime.timedelta(seconds=retry_after)
             raise SlackError("Too many requests - retry after {0} second(s)" \
                     .format(retry_after))
 

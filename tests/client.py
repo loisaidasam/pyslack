@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from datetime import datetime, timedelta
+import datetime
 import unittest
 
 from mock import Mock, patch
@@ -49,7 +49,7 @@ class ClientTest(unittest.TestCase):
 
         self.assertEqual(r_post.call_count, 1)
         self.assertGreater(client.blocked_until, 
-                datetime.now() + timedelta(seconds=8))
+                datetime.datetime.utcnow() + datetime.timedelta(seconds=8))
 
         # A second send attempt should also throw, but without creating a request
         with self.assertRaises(pyslack.SlackError) as context:
@@ -58,7 +58,8 @@ class ClientTest(unittest.TestCase):
         self.assertEqual(r_post.call_count, 1)
 
         # After the time has expired, it should be business as usual
-        client.blocked_until = datetime.now() - timedelta(seconds=5)
+        client.blocked_until = datetime.datetime.utcnow() - \
+                datetime.timedelta(seconds=5)
 
         r_post.return_value = Mock(status_code=200)
         r_post.return_value.json.return_value = {"ok": True}
