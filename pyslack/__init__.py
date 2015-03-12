@@ -67,7 +67,8 @@ class SlackClient(object):
         if force_lookup or not self.channel_name_id_map:
             channels = self.channels_list()['channels']
             self.channel_name_id_map = {channel['name']: channel['id'] for channel in channels}
-        return self.channel_name_id_map.get(channel_name)
+        channel = channel_name.startswith('#') and channel_name[1:] or channel_name
+        return self.channel_name_id_map.get(channel)
 
     def chat_post_message(self, channel, text, **params):
         """chat.postMessage
