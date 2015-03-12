@@ -1,5 +1,5 @@
 
-from distutils.core import setup
+from setuptools import setup
 
 
 setup(
@@ -10,4 +10,5 @@ setup(
     author_email="sam.sandberg@gmail.com",
     packages=["pyslack"],
     install_requires=["requests"],
+    test_suite="tests",
 )
