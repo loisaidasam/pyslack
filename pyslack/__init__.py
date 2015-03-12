@@ -50,9 +50,9 @@ class SlackClient(object):
         https://api.slack.com/methods/chat.update
 
         Required parameters:
-        `ts`:  Timestamp of the message to be updated (e.g: 1405894322.002768)    
-        `channel`: Channel containing the message to be updated. (e.g: C1234567890)
-        `text`: New text for the message, using the default formatting rules. (e.g: Hello world)
+        `ts`:  Timestamp of the message to be updated (e.g: "1405894322.002768")    
+        `channel`: Channel containing the message to be updated. (e.g: "C1234567890")
+        `text`: New text for the message, using the default formatting rules. (e.g: "Hello world")
         """
         method = 'chat.update'
         params.update({
