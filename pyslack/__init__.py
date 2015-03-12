@@ -14,6 +14,10 @@ class SlackClient(object):
     def __init__(self, token):
         self.token = token
         self.blocked_until = None
+        self.channel_name_id_map = {}
+
+    def _channel_is_name(self, channel):
+        return channel.startswith('#')
 
     def _make_request(self, method, params):
         """Make request to API endpoint
@@ -43,12 +47,33 @@ class SlackClient(object):
             raise SlackError(result['error'])
         return result
 
+    def channels_list(self, exclude_archived=True, **params):
+        """channels.list
+
+        This method returns a list of all channels in the team. This includes
+        channels the caller is in, channels they are not currently in, and
+        archived channels. The number of (non-deactivated) members in each
+        channel is also returned.
+
+        https://api.slack.com/methods/channels.list
+        """
+        method = 'channels.list'
+        params.update({'exclude_archived': exclude_archived and 1 or 0})
+        return self._make_request(method, params)
+
+    def channel_name_to_id(self, channel_name, force_lookup=False):
+        """Helper name for getting a channel's id from its name
+        """
+        if force_lookup or not self.channel_name_id_map:
+            channels = self.channels_list()['channels']
+            self.channel_name_id_map = {channel['name']: channel['id'] for channel in channels}
+        return self.channel_name_id_map.get(channel_name)
+
     def chat_post_message(self, channel, text, **params):
         """chat.postMessage
 
         This method posts a message to a channel.
 
-        Check docs for all available **params options:
         https://api.slack.com/methods/chat.postMessage
         """
         method = 'chat.postMessage'
@@ -63,15 +88,17 @@ class SlackClient(object):
 
         This method updates a message.
 
-        Check docs for all available **params options:
-        https://api.slack.com/methods/chat.update
-
         Required parameters:
-        `ts`:  Timestamp of the message to be updated (e.g: "1405894322.002768")    
-        `channel`: Channel containing the message to be updated. (e.g: "C1234567890")
-        `text`: New text for the message, using the default formatting rules. (e.g: "Hello world")
+            `channel`: Channel containing the message to be updated. (e.g: "C1234567890")
+            `text`: New text for the message, using the default formatting rules. (e.g: "Hello world")
+            `timestamp`:  Timestamp of the message to be updated (e.g: "1405894322.002768")
+
+        https://api.slack.com/methods/chat.update
         """
         method = 'chat.update'
+        if self._channel_is_name(channel):
+            # chat.update only takes channel ids (not channel names)
+            channel = self.channel_name_to_id(channel)
         params.update({
             'channel': channel,
             'text': text,
