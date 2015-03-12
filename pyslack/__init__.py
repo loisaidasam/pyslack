@@ -41,6 +41,22 @@ class SlackClient(object):
         })
         return self._make_request(method, params)
 
+    def chat_update_message(self, channel, text, timestamp, **params):
+        """chat.update
+
+        This method updates a message.
+        
+        Check docs for all available **params options:
+        https://api.slack.com/methods/chat.update
+        """
+        method = 'chat.update'
+        params.update({
+            'channel': channel,
+            'text': text,
+            'ts': timestamp,
+        })
+        return self._make_request(method, params)
+
 
 class SlackHandler(logging.Handler):
     """A logging handler that posts messages to a Slack channel!
