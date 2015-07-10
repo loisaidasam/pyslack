@@ -4,5 +4,5 @@ settings.py
 
 build/
 dist/
-pyslack.egg-info/
+*.egg-info/
 
