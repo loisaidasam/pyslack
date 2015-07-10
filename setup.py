@@ -13,5 +13,5 @@ setup(
     packages=["pyslack"],
     test_suite="tests",
     url="https://github.com/loisaidasam/pyslack",
-    version="0.5.2",
+    version="0.5.3",
 )
