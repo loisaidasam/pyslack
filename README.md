@@ -11,7 +11,7 @@ Listed as an official python client on Slack's [Community-built Integrations pag
 
     pip install pyslack-real
 
-(some chump stole the `pyslack` name right out from under me!)
+([some chump](https://pypi.python.org/pypi/pyslack/) stole the `pyslack` name right out from under me!)
 
 ## Usage
 
