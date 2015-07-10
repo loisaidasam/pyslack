@@ -5,9 +5,13 @@ A Python wrapper for Slack's API
 
 https://api.slack.com
 
+Listed as an official python client on Slack's [Community-built Integrations page](https://api.slack.com/community)
+
 ## Installation
 
-    pip install git+git://github.com/loisaidasam/pyslack.git
+    pip install pyslack-real
+
+(some chump stole the `pyslack` name right out from under me!)
 
 ## Usage
 
