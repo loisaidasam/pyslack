@@ -1,6 +1,8 @@
 pyslack
 ==========
 
+[![ghit.me](https://ghit.me/badge.svg?repo=loisaidasam/pyslack)](https://ghit.me/repo/loisaidasam/pyslack)
+
 A Python wrapper for Slack's API
 
 https://api.slack.com
