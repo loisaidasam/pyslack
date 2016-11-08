@@ -7,7 +7,7 @@ A Python wrapper for Slack's API
 
 https://api.slack.com
 
-Listed as an official python client on Slack's [Community-built Integrations page](https://api.slack.com/community)
+(Formerly) listed as an official python client on Slack's [Community-built Integrations page](https://api.slack.com/community)
 
 ## Installation
 
